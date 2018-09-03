@@ -1,26 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Scoped CSS Variables and JS</title>
 </head>
+
 <body>
   <h2>Update CSS Variables with <span class='hl'>JS</span></h2>
 
   <div class="controls">
     <label for="spacing">Spacing:</label>
-    <input id="spacing" type="range" name="spacing" min="10" max="200" value="10" data-sizing="px">
+    <input id="spacing" type="range" name="spacing" min="24" max="200" value="0" data-sizing="px">
 
     <label for="blur">Blur:</label>
-    <input id="blur" type="range" name="blur" min="0" max="25" value="10" data-sizing="px">
+    <input id="blur" type="range" name="blur" min="0" max="25" value="0" data-sizing="px">
 
     <label for="base">Base Color</label>
-    <input id="base" type="color" name="base" value="#ffc600">
+    <input id="base" type="color" name="base" value="#f3be00">
   </div>
 
-  <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
+  <img src="https://source.unsplash.com/daily" class="responsive">
 
   <style>
+    @import url('https://fonts.googleapis.com/css?family=Karla:400,700');
+
+    :root {
+      --base: #f3be00;
+      --spacing: 24px;
+      --blur: 0px;
+    }
+
+    img {
+      padding: var(--spacing);
+      background: var(--base);
+      filter: blur(var(--blur));
+    }
+
+    .responsive {
+      width: 30%;
+      height: auto;
+    }
+
+    .hl {
+      color: var(--base);
+    }
 
     /*
       misc styles, nothing to do with CSS variables
@@ -28,11 +52,16 @@
 
     body {
       text-align: center;
-      background: #193549;
+      background: #DA93D2;
       color: white;
-      font-family: 'helvetica neue', sans-serif;
-      font-weight: 100;
+      font-family: 'Karla', sans-serif;
       font-size: 50px;
+      font-weight: 400;
+
+    }
+
+    h2 {
+      font-weight: 700;
     }
 
     .controls {
@@ -40,12 +69,54 @@
     }
 
     input {
-      width:100px;
+      width: 72px;
+      border-radius: 12px;
+      cursor: pointer;
+      outline: none;
     }
+
+    input[type="color"] {
+      border: 0;
+      width: 130px;
+      background: transparent;
+    }
+
+    input[type=range] {
+      border: 1pxs solid;
+      width: 130px;
+      cursor: pointer;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 130px;
+      height: 2px;
+      border: none;
+      border-radius: 3px;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      border: none;
+      height: 12px;
+      width: 12px;
+      border-radius: 50%;
+      margin-top: -5px;
+    }
+
   </style>
 
   <script>
+    const inputs = document.querySelectorAll('.controls input');
+
+    function handleUpdate() {
+      const suffix = this.dataset.sizing || '';
+      document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix);
+    }
+
+    inputs.forEach(input => input.addEventListener('change', handleUpdate));
+    inputs.forEach(input => input.addEventListener('mousemove', handleUpdate));
   </script>
 
 </body>
+
 </html>
